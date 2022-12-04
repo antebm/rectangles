@@ -5,6 +5,7 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 const scoreEl = document.querySelector('#scoreEl');
+const generatedEl = document.querySelector('#generatedEl');
 
 
 class Rectangle {
@@ -48,7 +49,7 @@ function spawnRectangles() {
         }
         rectangles.push(new Rectangle(x,y,size, color, velocity));
     }
-    console.log(rectangles)
+    generatedEl.innerHTML = rectangles.length
     
 }
 
