@@ -39,7 +39,8 @@ function spawnRectangles() {
     const numberOfRectangles = 5 + Math.random() * 20;
 
     for(let i = 0; i < numberOfRectangles; i++){
-        const size = 10 + Math.random() * 20;
+        // const size = 10 + Math.random() * 20;
+        const size = 25;
         const x = Math.random() * (innerWidth-size);
         const y = Math.random() * (innerHeight-size);
         const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
@@ -60,9 +61,12 @@ function animate() {
     
     ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fillRect(0,0, canvas.width, canvas.height);
+    
+    // redraw rectangles
     rectangles.forEach((rectangle, index)=>{
         rectangle.update();
-
+        
+        // velocity change
         if(rectangle.x + rectangle.size >= canvas.width || 
             rectangle.x <= 0){
             rectangle.x = rectangle.x - rectangle.velocity.x;
