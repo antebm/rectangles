@@ -34,25 +34,26 @@ let rectangles = [];
 
 function spawnRectangles() {
     
-    const numberOfRectangles = 5+ Math.random() * 20;
+    const numberOfRectangles = 5 + Math.random() * 20;
 
-    for(let i; i < numberOfRectangles; i++){
-        const size = 4 + Math.random() * 10;
+    for(let i = 0; i < numberOfRectangles; i++){
+        const size = 10 + Math.random() * 20;
         const x = Math.random() * (innerWidth-size);
         const y = Math.random() * (innerHeight-size);
         const color = 'red';
         const velocity = Math.random*4 + 1;
         rectangles.push(new Rectangle(x,y,size, color, velocity));
     }
+    console.log(rectangles)
     
 }
 
 function animate() {
     //nimationId = requestAnimationFrame(animate);
     rectangles.forEach((rectangle, index)=>{
-        rectangle.rectangle();
+        rectangle.update();
     })
 }
 
-animate();
 spawnRectangles();
+animate();
