@@ -31,7 +31,41 @@ class Rectangle {
     }
 }
 
+const friction = 0.99;
+
+class Particle {
+    constructor(x, y, radius, color, velocity) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.velocity = velocity;
+        this.alpha = 1;
+    }
+
+
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    update() {
+        this.draw();
+        this.velocity.x *= friction;
+        this.velocity.y *= friction;
+        this.x = this.x + this.velocity.x;
+        this.y = this.y + this.velocity.y;
+        this.alpha -= 0.01;
+    }
+}
+
 let rectangles = [];
+let particles = [];
 let score = 0;
 
 function spawnRectangles() {
@@ -61,6 +95,14 @@ function animate() {
     
     ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fillRect(0,0, canvas.width, canvas.height);
+
+    // hit animation
+    particles.forEach((particle, index) => {
+        if(particle.alpha < 0) {
+            particles.splice(index, 1);
+        }
+        particle.update();
+    })
     
     // redraw rectangles
     rectangles.forEach((rectangle, index)=>{
@@ -70,22 +112,36 @@ function animate() {
         if(rectangle.x + rectangle.size >= canvas.width || 
             rectangle.x <= 0){
             rectangle.x = rectangle.x - rectangle.velocity.x;
-            rectangle.velocity.x = - rectangle.velocity.x * Math.random()*2;
-            rectangle.velocity.y = rectangle.velocity.y * Math.random()*2;
+            rectangle.velocity.x = - rectangle.velocity.x + (Math.random()-0.5)*3;
+            rectangle.velocity.y = rectangle.velocity.y + (Math.random()-0.5) *3;
         } else if (rectangle.y + rectangle.size >= canvas.height ||
             rectangle.y <=0) {
                 rectangle.y = rectangle.y - rectangle.velocity.y;
-                rectangle.velocity.x = rectangle.velocity.x * Math.random()*2;
-            rectangle.velocity.y = -rectangle.velocity.y * Math.random()*2;
+                rectangle.velocity.y = - rectangle.velocity.y + (Math.random()-0.5)*3;
+            rectangle.velocity.x = rectangle.velocity.x + (Math.random()-0.5) *3;
         }
 })
+}
+
+function createParticleEffect(x, y, color){
+    for ( let i = 0; i < 10; i++) {
+        console.log(x)
+        particles.push(new Particle(x, y, Math.random()*2, color,{
+            x: (Math.random() - 0.5) * 6,
+            y: (Math.random() - 0.5) * 6
+        }) )
+    }
 }
 
 window.addEventListener('click', (event) => {
     rectangles.forEach((rectangle, index) => {
         if(event.clientX >= rectangle.x && event.clientX <= rectangle.x + rectangle.size 
             && event.clientY >= rectangle.y && event.clientY + rectangle.size) {
+                console.log('hit')
                 rectangles.splice(index, 1);
+                const x = event.clientX;
+                const y = event.clientY;
+                createParticleEffect(x, y, rectangle.color);
                 score = score+1;
                 scoreEl.innerHTML = score;
             }
